@@ -5,7 +5,7 @@
 namespace jb
 {
 
-void CmdExecute::execute() const
+std::string CmdExecute::execute() const
 {
 	m_toExecute();
 }

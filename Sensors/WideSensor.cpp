@@ -5,22 +5,26 @@
 
 namespace jb
 {
-void WideSensor::scan(const WorldGrid& grid, const Position& pos, const Compass& compass) const 
+std::stringstream WideSensor::scan(const WorldGrid& grid, const Position& pos, const Compass& compass) const 
 { 
+    std::stringstream out;
+    out << "Wide Sensor invoked." << std::endl;
     Position start{pos.getX() - 1,pos.getY() - 2};
     
-    Position end{pos.getX() - 1,pos.getY() + 3};
+    Position end{pos.getX() - 1,pos.getY() + 2};
     int prevX = start.getX();
     for (auto it = grid.begin(start, end); it != grid.end(start, end); ++it)
     {
         if (it.getCurrentX() != prevX)
         {
-            std::cout << '\n';
+            out << '\n';
             prevX = it.getCurrentX();
         }
-        std::cout << "I enter here" << std::endl;
-        std::cout << (*it)->symbol(); // or however you print
+        out << "I enter here" << std::endl;
+        out << (*it)->symbol(); // or however you print
     }
-    std::cout << std::endl;
+    out << std::endl;
+    
+    return out;
 }
 }

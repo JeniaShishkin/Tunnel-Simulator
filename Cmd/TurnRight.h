@@ -13,7 +13,7 @@ class CmdTurnRight : public Command
 public:
 	CmdTurnRight(Compass *compass) : m_compass(*compass) { }
 
-	virtual void execute() const override;
+	virtual std::string execute() const override;
 
 private:
 	Compass &m_compass;

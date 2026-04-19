@@ -33,7 +33,7 @@ class CmdPointOfView : public Command
 {
 public:
     explicit CmdPointOfView(const Context& ctx) : m_ctx(ctx) { }
-    virtual void execute() const override;
+    virtual std::string execute() const override;
     ~CmdPointOfView() = default;
 
 private:

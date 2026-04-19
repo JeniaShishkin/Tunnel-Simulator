@@ -1,21 +1,23 @@
 #include "Forward.h"
 #include "../Tiles/Tile.h"
-
+#include <sstream>
 namespace jb
 {
 
-void CmdForward::execute() const 
+std::string CmdForward::execute() const 
 { 
+	std::stringstream out;
 	Position newPosition = advance(m_position, m_compass);
 	if (m_grid.getTile(newPosition.getX(), newPosition.getY()).canOccupy())
 	{
-		std::cout << "forward" << std::endl; 
+		out << "forward" << std::endl; 
 		m_position = newPosition;
 	}
 	else
 	{
-		std::cout << "blocked" << std::endl; 
+		out << "blocked" << std::endl; 
 	}
+	return out.str();
 }
 
 } // jb

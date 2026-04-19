@@ -5,8 +5,10 @@
 
 namespace jb
 {
-void DistanceSensor::scan(const WorldGrid& grid, const Position& pos, const Compass& compass) const 
+std::stringstream DistanceSensor::scan(const WorldGrid& grid, const Position& pos, const Compass& compass) const 
 { 
+    std::stringstream out;
+    out << "Distance Sensor invoked." << std::endl;
     int x = pos.getX();
     int y = pos.getY();
 
@@ -18,26 +20,24 @@ void DistanceSensor::scan(const WorldGrid& grid, const Position& pos, const Comp
 
     for (auto it = grid.begin(start, end); it != grid.end(start, end); ++it)
     {
-        int ix = it.getCurrentX();
-        int iy = it.getCurrentY();
+        int curX = it.getCurrentX();
+        int curY = it.getCurrentY();
 
-        int dx = (start.getX() + 2) - ix; // row index: 0,1,2
-        int allowedWidth = dx * 2 + 1;    // 1,3,5
+        int dx = (start.getX() + 2) - curX; 
+        int allowedWidth = dx * 2 + 1; 
 
         int leftBound = centerY - dx;
         int rightBound = centerY + dx;
 
-        // Filter logic
-        if (iy < leftBound || iy > rightBound)
-            continue;
+        if (curY < leftBound || curY > rightBound) { continue; }
 
-        // optional row separation
-        if (iy == leftBound)
-            std::cout << '\n';
+        if (curY == leftBound) { out << '\n'; }
 
-        std::cout << (*it)->symbol();
+        out << (*it)->symbol();
     }
 
-    std::cout << '\n';
+    out << '\n';
+
+    return out;
 }
 }

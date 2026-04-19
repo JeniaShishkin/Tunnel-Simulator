@@ -12,7 +12,7 @@ class DistanceSensor : public Sensor
 {
 public:
     DistanceSensor() = default;
-    virtual void scan(const WorldGrid& grid, const Position& pos, const Compass& compass) const override;
+    virtual std::stringstream scan(const WorldGrid& grid, const Position& pos, const Compass& compass) const override;
     ~DistanceSensor() = default;
 
 private:

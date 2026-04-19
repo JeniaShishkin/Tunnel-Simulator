@@ -17,7 +17,7 @@ class CmdForward : public Command
 public:
 	CmdForward(const WorldGrid *grid, Position *position, const Compass *compass) : m_grid(*grid), m_position(*position), m_compass(*compass) { }
 
-	virtual void execute() const override;
+	virtual std::string execute() const override;
 
 private:
 	const WorldGrid &m_grid;

@@ -3,6 +3,7 @@
 #include <string_view>
 #include <map>
 #include <cassert>
+#include <sstream>
 
 #include "Drone.h"
 #include "Navigation/WorldGrid.h"
@@ -25,30 +26,38 @@
 #include "Sensors/CircularSensor.h"
 #include "Sensors/DistanceSensor.h"
 
+/* NETWORKING */
+#include "Networking/NaiveNetworkHandler.h"
+
 using namespace jb;
 
 using CommandsMap = std::map<std::string_view, Command *>;
 
 Command &parseCommand(const CommandsMap &commands, const std::string &s);
 
+
 struct CmdUnknown : public Command
 {
-	virtual void execute() const override { std::cout << "ERROR: Unknown command" << std::endl; }
+	virtual std::string execute() const override { std::stringstream buffer; buffer << "ERROR: Unknown command\n"; return buffer.str(); }
 } CMD_UNKNOWN;
 
+static NaiveNetworkHandler nh{9000};
+static size_t socketId;
+static std::string input;
 
 int main()
 {
+ 
 	WorldGrid theWorld;
 	//Drone d;
 	Position p{0,1};
 	Compass c{NORTH};
     Context ctx{theWorld, p, c};
 	CmdForward forward{&theWorld, &p, &c};
-	CmdTurnLeft left(&c);
-	CmdTurnRight right(&c);
-	CmdPointOfView pov(ctx);
-	CmdMap map(theWorld);
+	CmdTurnLeft left{&c};
+	CmdTurnRight right{&c};
+	CmdPointOfView pov{ctx};
+	CmdMap map{theWorld};
 	CircularSensor c_sensor{};
 	WideSensor w_sensor{};
 	DistanceSensor d_sensor{};
@@ -57,7 +66,7 @@ int main()
     SetSensor s_c{ctx, d_sensor};
 
 	bool doLoop = true;
-	CmdExecute exitLoop{ [&doLoop]() { doLoop=false;} };
+	CmdExecute exitLoop{[&doLoop]() { doLoop=false;} };
 
 	const CommandsMap commands {
 		{ "fwd", &forward },
@@ -74,13 +83,17 @@ int main()
 	std::string input;
 	while (doLoop && !theWorld.getTile(p.getX(), p.getY()).shouldExit())
 	{
-		std::cout << "> ";
-		if (!std::getline(std::cin, input))
+        nh.GetInput(&socketId, &input);
+		if (input.empty())
 		{
-			continue;
+            nh.PutOutput(socketId,"> ");
+            continue;
 		}
+        
 		Command &cmd = parseCommand(commands, input);
-		cmd.execute();
+		std::string buffer = cmd.execute();
+        nh.PutOutput(socketId, buffer);
+        nh.PutOutput(socketId,"> ");
 	}
 }
 

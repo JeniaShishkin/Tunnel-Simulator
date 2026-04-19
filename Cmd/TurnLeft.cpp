@@ -5,10 +5,12 @@
 namespace jb
 {
 
-void CmdTurnLeft::execute() const
+std::string CmdTurnLeft::execute() const
 {
+	std::stringstream out;
 	turnLeft(&m_compass);
-	std::cout << "turned left. now facing " << m_compass.getHeading() << std::endl;
+	out << "turned left. now facing " << m_compass.getHeading() << std::endl;
+	return out.str();
 }
 
 

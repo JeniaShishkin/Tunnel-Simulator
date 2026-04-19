@@ -13,7 +13,7 @@ public:
 	CmdExecute(const std::function<void()> &toExecute) : m_toExecute(toExecute) { }
 	CmdExecute(const std::function<void()> &&toExecute) : m_toExecute(std::move(toExecute)) { }
 
-	virtual void execute() const override;
+	virtual std::string execute() const override;
 
 private:
 	std::function<void()> m_toExecute;

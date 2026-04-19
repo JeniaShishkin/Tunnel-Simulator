@@ -12,7 +12,7 @@ class CmdMap : public Command
 {
 public:
     explicit CmdMap(const WorldGrid& grid) : m_grid(grid) { } 
-    virtual void execute() const override;
+    virtual std::string execute() const override;
     ~CmdMap() = default;
 
 private:

@@ -2,13 +2,16 @@
 
 namespace jb
 {
-void CmdPointOfView::execute() const
+std::string CmdPointOfView::execute() const
 {
+    std::stringstream out;
     if (!m_ctx.activeSensor)
     {
-        std::cout << "No sensor selected\n";
-        return;
+        out << "No sensor selected\n";
+        return out.str();
     }
-    m_ctx.activeSensor->scan(m_ctx.m_grid, m_ctx.m_position, m_ctx.m_compass);
+    out = m_ctx.activeSensor->scan(m_ctx.m_grid, m_ctx.m_position, m_ctx.m_compass);
+    
+    return out.str();
 }
 }

@@ -12,7 +12,7 @@ class SetSensor: public Command
 public:
     SetSensor(Context& c, const Sensor& s) : m_ctx(c), m_sensor(s) { }
 
-    void execute() const override { m_ctx.activeSensor = &m_sensor; }
+    std::string execute() const override { m_ctx.activeSensor = &m_sensor; }
 
     ~SetSensor() = default;
 private:

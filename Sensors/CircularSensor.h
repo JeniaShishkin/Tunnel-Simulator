@@ -10,7 +10,7 @@ class CircularSensor : public Sensor
 {
 public:
     CircularSensor() = default;
-    virtual void scan(const WorldGrid& grid, const Position& pos, const Compass& compass) const override;
+    virtual std::stringstream scan(const WorldGrid& grid, const Position& pos, const Compass& compass) const override;
     ~CircularSensor() = default;
 };
 }

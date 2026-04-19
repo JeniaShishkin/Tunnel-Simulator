@@ -5,8 +5,9 @@
 namespace jb
 {
 
-void CmdMap::execute() const
+std::string CmdMap::execute() const
 {
+    std::stringstream out;
     Position start{0,0};
     
     Position end{m_grid.getRowSize(),m_grid.getColSize()};
@@ -15,12 +16,14 @@ void CmdMap::execute() const
     {
         if (it.getCurrentX() != prevX)
         {
-            std::cout << '\n';
+            out << '\n';
             prevX = it.getCurrentX();
         }
-        std::cout << (*it)->symbol(); // or however you print
+        out << (*it)->symbol(); // or however you print
     }
-    std::cout << std::endl;
+    out << std::endl;
+
+    return out.str();
 }
 
 }
