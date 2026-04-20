@@ -10,14 +10,14 @@ namespace jb
 class SetSensor: public Command
 {
 public:
-    SetSensor(Context& c, const Sensor& s) : m_ctx(c), m_sensor(s) { }
+    SetSensor(Context& c, std::shared_ptr<Sensor> s) : m_ctx(c), m_sensor(s) { }
 
-    std::string execute() const override { m_ctx.activeSensor = &m_sensor; }
+    std::string execute() const override { m_ctx.activeSensor = m_sensor.get(); return ""; }
 
     ~SetSensor() = default;
 private:
     Context& m_ctx;
-    const Sensor& m_sensor;
+    std::shared_ptr<Sensor> m_sensor;
 
 };
 }

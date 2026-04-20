@@ -21,7 +21,7 @@ std::stringstream WideSensor::scan(const WorldGrid& grid, const Position& pos, c
             prevX = it.getCurrentX();
         }
         out << "I enter here" << std::endl;
-        out << (*it)->symbol(); // or however you print
+        out << (*it)->symbol(); 
     }
     out << std::endl;
     

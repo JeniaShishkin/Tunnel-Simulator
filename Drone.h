@@ -1,50 +1,76 @@
 #ifndef __Drone_h__
 #define __Drone_h__
 
-#include <memory>
-#include <vector>
-#include <unordered_map>
+#include <iostream>
+#include <string>
+#include <string_view>
+#include <map>
+#include <cassert>
+#include <sstream>
 
-#include "Cmd/Context.h"
-#include "Navigation/Compass.h"
-#include "Navigation/Position.h"
 #include "Navigation/WorldGrid.h"
+#include "Tiles/Tile.h"
+
+/* COMMAND INCLUDES */
+#include "Cmd/Command.h"
+#include "Cmd/Forward.h"
+#include "Cmd/TurnLeft.h"
+#include "Cmd/TurnRight.h"
+#include "Cmd/Execute.h"
+#include "Cmd/PointOfView.h"
+#include "Cmd/Map.h"
+#include "Cmd/SetSensor.h"
+
+/* SENSOR INCLUDES */
+#include "Cmd/Context.h"
+#include "Sensors/Sensor.h"
 #include "Sensors/WideSensor.h"
-#include "Sensors/DistanceSensor.h"
 #include "Sensors/CircularSensor.h"
+#include "Sensors/DistanceSensor.h"
+
 namespace jb
 {
 
-using TypeId = char;
+using TypeId = std::string;
 class Drone 
 {
 public:
-	using Sensors = std::vector<std::unique_ptr<Sensor>>;
-	Drone(WorldGrid grid, Compass compass, Position position, unsigned int energy, Sensors sensors) : 
-		m_grid(grid), m_compass(compass), m_position(position), m_sensors(sensors) { }
+// Command controlling variable.
+	using CommandsMap = std::map<std::string, std::unique_ptr<Command>>;
+	const WorldGrid m_grid;
+	bool doLoop = true;
 
+	using Sensors = std::vector<std::shared_ptr<Sensor>>;
+	Drone(WorldGrid grid, Compass compass, Position position, unsigned int energy, Sensors sensors);
+	bool reachedExit();
+	const CommandsMap& getCommand() const { return m_commands; }
 	~Drone() = default;
 private:
-	WorldGrid m_grid;
 	Compass m_compass;
 	Position m_position;
-
+	Context m_ctx;
 	unsigned int m_energy;
-	std::vector<std::unique_ptr<Sensor>> m_sensors;
+	std::vector<std::shared_ptr<Sensor>> m_sensors;
+
+	// Drone commands map.
+	CommandsMap m_commands;
+
+
 };
-//	WorldGrid theWorld;
-//	//Drone d;
-//	Position p{0,1};
-//	Compass c{NORTH};
-//    Context ctx{theWorld, p, c};
 
-using DroneConfigByType = std::unordered_map<TypeId, Drone>;
+using DroneFactory = std::function<Drone()>;
+using DroneConfigByType = std::unordered_map<TypeId, DroneFactory>;
+
 static const DroneConfigByType DRONE_CONFIGS = {
-	{'A', Drone{WorldGrid{}, Compass{NORTH}, Position{0,1}, 300, {std::make_unique<WideSensor>()}}},
-	{'B', Drone{WorldGrid{}, Compass{NORTH}, Position{0,1}, 500, {std::make_unique<WideSensor>(), std::make_unique<CircularSensor>()}}},
-	{'C', Drone{WorldGrid{}, Compass{NORTH}, Position{0,1}, 400, {std::make_unique<WideSensor>()}}},
-
-
+	{"A", [] { 
+		return Drone{WorldGrid{}, Compass{NORTH}, Position{0,1}, 300, {std::make_shared<WideSensor>()}};
+	}},
+	{"B", [] {
+		return Drone{WorldGrid{}, Compass{NORTH}, Position{0,1}, 500, {std::make_shared<WideSensor>(), std::make_shared<CircularSensor>()}};
+	}},
+	{"C", [] {
+		return Drone{WorldGrid{}, Compass{NORTH}, Position{0,1}, 400, {std::make_shared<WideSensor>()}};
+	}},
 }; 
 
 
