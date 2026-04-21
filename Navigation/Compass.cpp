@@ -10,6 +10,12 @@ Compass SOUTH{ 2, Compass::STEPS_OF_90};
 Compass WEST{ 3, Compass::STEPS_OF_90};
 
 
+// Compass NORTH_VAR{ 0, Compass::STEPS_OF_90};
+// Compass EAST_VAR{ 1, Compass::STEPS_OF_90};
+// Compass SOUTH_VAR{ 2, Compass::STEPS_OF_90};
+// Compass WEST_VAR{ 3, Compass::STEPS_OF_90};
+
+
 static int toBoundedDegrees(int headingSteps, int stepSize)
 {
 	int unboundedDegrees = (headingSteps * stepSize);
@@ -52,5 +58,13 @@ void turnRight(Compass *compass)
 {
 	*compass = compass->rotateInStepsOf90(1);
 }
+
+// const Compass NORTH() { return NORTH_VAR; }
+// 
+// const Compass EAST() { return EAST_VAR; }
+// 
+// const Compass SOUTH() { return SOUTH_VAR; }
+// 
+// const Compass WEST() { return WEST_VAR; }
 
 } // jb

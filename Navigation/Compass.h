@@ -32,6 +32,13 @@ bool operator<(const Compass &a, const Compass &b);
 void turnLeft(Compass *compass);
 void turnRight(Compass *compass);
 
+
+
+// const Compass NORTH(); 
+// const Compass EAST();
+// const Compass SOUTH(); 
+// const Compass WEST();
+
 extern Compass NORTH;
 extern Compass EAST;
 extern Compass SOUTH;

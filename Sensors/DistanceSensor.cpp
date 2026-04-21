@@ -8,36 +8,33 @@ namespace jb
 std::stringstream DistanceSensor::scan(const WorldGrid& grid, const Position& pos, const Compass& compass) const 
 { 
     std::stringstream out;
-    out << "Distance Sensor invoked." << std::endl;
-    int x = pos.getX();
-    int y = pos.getY();
-
-    Position start{x - 3, y - 2};
-    Position end  {x - 1, y + 2}; 
-
-    int baseX = start.getX();
-    int centerY = y;
-
+    out << "Distance sensor invoked" << std::endl;
+    const auto [start, end] = getIterationBoundaries(pos, compass);
+    int prevX = start.getX();
     for (auto it = grid.begin(start, end); it != grid.end(start, end); ++it)
     {
-        int curX = it.getCurrentX();
-        int curY = it.getCurrentY();
-
-        int dx = (start.getX() + 2) - curX; 
-        int allowedWidth = dx * 2 + 1; 
-
-        int leftBound = centerY - dx;
-        int rightBound = centerY + dx;
-
-        if (curY < leftBound || curY > rightBound) { continue; }
-
-        if (curY == leftBound) { out << '\n'; }
-
+        if (it.getCurrentX() != prevX)
+        {
+            out << '\n';
+            prevX = it.getCurrentX();
+        }
         out << (*it)->symbol();
     }
-
-    out << '\n';
-
+    out << std::endl;
     return out;
 }
+
+std::pair<Position, Position> DistanceSensor::getIterationBoundaries(const Position& pos, const Compass& compass) const
+{
+    auto it = DISTANCE_BOUNDS.find(compass.getHeading());
+    if (it == DISTANCE_BOUNDS.end())
+    {
+        throw std::runtime_error("Invalid Heading");
+    }
+    const auto& offset = it->second;
+    Position start{pos.getX() + offset.start.getX(), pos.getY() + offset.start.getY()};
+    Position end{pos.getX() + offset.end.getX() ,pos.getY() + offset.end.getY()};
+    return {start,end};
+}
+
 }

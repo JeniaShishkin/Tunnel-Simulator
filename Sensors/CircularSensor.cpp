@@ -2,16 +2,17 @@
 #include "../Navigation/WorldGrid.h"
 #include "../Navigation/Position.h"
 #include "../Tiles/Tile.h"
+#include <map>
 
 namespace jb
 {
+
+
 std::stringstream CircularSensor::scan(const WorldGrid& grid, const Position& pos, const Compass& compass) const 
 { 
     std::stringstream out;
     out << "Circular sensor invoked" << std::endl;
-    Position start{pos.getX() - 2,pos.getY() - 2};
-    
-    Position end{pos.getX() + 1,pos.getY() + 1};
+    const auto [start, end] = getIterationBoundaries(pos, compass);
     int prevX = start.getX();
     for (auto it = grid.begin(start, end); it != grid.end(start, end); ++it)
     {
@@ -20,10 +21,23 @@ std::stringstream CircularSensor::scan(const WorldGrid& grid, const Position& po
             out << '\n';
             prevX = it.getCurrentX();
         }
-        out << (*it)->symbol(); // or however you print
+        out << (*it)->symbol();
     }
     out << std::endl;
-
     return out;
+}
+
+
+std::pair<Position, Position> CircularSensor::getIterationBoundaries(const Position& pos, const Compass& compass) const
+{
+    auto it = CIRCULAR_BOUNDS.find(compass.getHeading());
+    if (it == CIRCULAR_BOUNDS.end())
+    {
+        throw std::runtime_error("Invalid Heading");
+    }
+    const auto& offset = it->second;
+    Position start{pos.getX() + offset.start.getX(), pos.getY() + offset.start.getY()};
+    Position end{pos.getX() + offset.end.getX() ,pos.getY() + offset.end.getY()};
+    return {start,end};
 }
 }

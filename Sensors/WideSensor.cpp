@@ -9,9 +9,7 @@ std::stringstream WideSensor::scan(const WorldGrid& grid, const Position& pos, c
 { 
     std::stringstream out;
     out << "Wide Sensor invoked." << std::endl;
-    Position start{pos.getX() - 1,pos.getY() - 2};
-    
-    Position end{pos.getX() - 1,pos.getY() + 2};
+    const auto [start, end] = getIterationBoundaries(pos, compass);
     int prevX = start.getX();
     for (auto it = grid.begin(start, end); it != grid.end(start, end); ++it)
     {
@@ -25,5 +23,18 @@ std::stringstream WideSensor::scan(const WorldGrid& grid, const Position& pos, c
     out << std::endl;
     
     return out;
+}
+
+std::pair<Position, Position> WideSensor::getIterationBoundaries(const Position& pos, const Compass& compass) const
+{
+    auto it = WIDE_BOUNDS.find(compass.getHeading());
+    if (it == WIDE_BOUNDS.end())
+    {
+        throw std::runtime_error("Invalid Heading");
+    }
+    const auto& offset = it->second;
+    Position start{pos.getX() + offset.start.getX(), pos.getY() + offset.start.getY()};
+    Position end{pos.getX() + offset.end.getX() ,pos.getY() + offset.end.getY()};
+    return {start,end};
 }
 }

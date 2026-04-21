@@ -19,7 +19,7 @@ struct PositionDelta
 	int deltaY;
 };
 
-using DeltasMap = std::map<Compass, const PositionDelta>;
+using DeltasMap = std::map<const Compass, const PositionDelta>;
 
 static const DeltasMap DELTAS { 
 	{ NORTH, { -1, 0 } }, 
