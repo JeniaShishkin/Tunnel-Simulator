@@ -1,5 +1,5 @@
-#ifndef __CmdForward_h__
-#define __CmdForward_h__
+#ifndef __CmdBackward_h__
+#define __CmdBackward_h__
 
 #include <iostream>
 
@@ -11,10 +11,10 @@
 namespace jb
 {
 
-class CmdForward : public Command
+class CmdBackward : public Command
 {
 public:
-	CmdForward(WorldGrid *grid, Position *position, const Compass *compass) : m_grid(*grid), m_position(*position), m_compass(*compass) { }
+	CmdBackward(WorldGrid *grid, Position *position, const Compass *compass) : m_grid(*grid), m_position(*position), m_compass(*compass) { }
 
 	virtual std::string execute() const override;
 

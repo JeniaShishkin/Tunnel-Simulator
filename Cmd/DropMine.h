@@ -1,5 +1,5 @@
-#ifndef __CmdForward_h__
-#define __CmdForward_h__
+#ifndef __DROPMINE_H__
+#define __DROPMINE_H__
 
 #include <iostream>
 
@@ -11,12 +11,12 @@
 namespace jb
 {
 
-class CmdForward : public Command
+class CmdPlantMine : public Command
 {
 public:
-	CmdForward(WorldGrid *grid, Position *position, const Compass *compass) : m_grid(*grid), m_position(*position), m_compass(*compass) { }
-
+	explicit CmdPlantMine(WorldGrid *grid, Position *position, const Compass *compass) : m_grid(*grid), m_position(*position), m_compass(*compass) { }
 	virtual std::string execute() const override;
+    ~CmdPlantMine() = default;
 
 private:
 	WorldGrid &m_grid;

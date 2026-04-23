@@ -30,4 +30,5 @@ Position advance(const Position &cur, const Compass &heading)
 	return Position{cur.getX() + deltaItr->second.deltaX, cur.getY() + deltaItr->second.deltaY};
 }
 
+
 } // jb

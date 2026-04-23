@@ -7,6 +7,9 @@
 #include <vector>
 #include <cstddef>
 #include <fstream>
+#include <utility>
+#include <unordered_set>
+
 #include "Position.h"
 
 namespace jb
@@ -44,20 +47,23 @@ public:
 	const const_iterator end(const Position& start, const Position& end) const;
 
 	void loadFromFile(std::ifstream& file);
+	void setDroneLocation(const Position& pos);
+	void updatePosition(const Position& cur, const Position& next);
 	Tile &getTile(int x, int y) const;
+	void placeMine(const Position& pos);
 	int getRowSize() const { return m_grid.size(); }
 	int getColSize() const { return m_grid.empty() ? 0 : m_grid[0].size(); }
 
 private:
 
-	static constexpr size_t NUM_ROWS = 6;
-	static constexpr size_t NUM_COLS = 5;
+	static constexpr size_t NUM_ROWS = 10;
+	static constexpr size_t NUM_COLS = 10;
 	using Grid = std::vector<std::vector<Tile*>>;
 
 	Grid m_grid;
 };
 
-
+extern WorldGrid GLOBAL_MAP;
 
 } // jb
 

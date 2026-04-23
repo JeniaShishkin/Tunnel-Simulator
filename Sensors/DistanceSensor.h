@@ -11,7 +11,7 @@ namespace jb
     { 0,   {{ -3 , -2 }, { -1,  2}}},    // NORTH
     { 90,  {{ -2 , 1 },  { 2 , 3 }}},    // EAST
     { 180, {{ 1 , -2 },  { 3 ,  2 }}},   // SOUTH
-    { 270, {{ -2 , -3 },  { -2 ,  -1 }}}  // WEST
+    { 270, {{ -2 , -3 },  { -2 ,  -1 }}} // WEST
 };
 
 class DistanceSensor : public Sensor

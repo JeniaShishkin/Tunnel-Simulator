@@ -1,16 +1,19 @@
-#include "Forward.h"
-#include "../Tiles/Tile.h"
-#include <sstream>
+#include "Backward.h"
+
 namespace jb
 {
 
-std::string CmdForward::execute() const 
-{ 
+
+std::string CmdBackward::execute() const 
+{
 	std::stringstream out;
-	Position newPosition = advance(m_position, m_compass);
+    Compass opposite = m_compass;
+    turnLeft(&opposite);
+    turnLeft(&opposite);
+	Position newPosition = advance(m_position, opposite);
 	if (m_grid.getTile(newPosition.getX(), newPosition.getY()).canOccupy())
 	{
-		out << "forward" << std::endl; 
+		out << "backward" << std::endl; 
 		m_grid.updatePosition(m_position, newPosition);
 		m_position = newPosition;
 	}
@@ -21,4 +24,5 @@ std::string CmdForward::execute() const
 	return out.str();
 }
 
-} // jb
+
+}

@@ -40,34 +40,41 @@ struct CmdUnknown : public Command
     virtual unsigned int getEnergyConsumption() const override { return 0; }
 } CMD_UNKNOWN;
 
-
 static NaiveNetworkHandler nh{9000};
 static size_t socketId;
 
 int main()
 {
+	std::vector<Drone> droneVector;
     static std::string input;
     nh.GetInput(&socketId, &input);
-    nh.PutOutput(socketId,"> Please enter desired drone: A, B, or C: ");
+    nh.PutOutput(socketId,"> Please choose a drone: A, B, or C: ");
     nh.GetInput(&socketId, &input);
     nh.PutOutput(socketId,"> ");
 
     Drone currentDrone = DRONE_CONFIGS.at(input)();
- 
+	GLOBAL_MAP.setDroneLocation(currentDrone.getPosition());
+    Drone anotherDrone = DRONE_CONFIGS.at("C")();
+	GLOBAL_MAP.setDroneLocation(anotherDrone.getPosition());
+
 	while (currentDrone.doLoop && !currentDrone.reachedExit())
 	{
-        nh.GetInput(&socketId, &input);
-		if (input.empty())
-		{
-            nh.PutOutput(socketId,"> ");
-            continue;
-		}
-        
+		nh.GetInput(&socketId, &input);        
 		const Command &cmd = parseCommand(currentDrone.getCommand(), input);
 		std::string buffer = cmd.execute();
-        nh.PutOutput(socketId, buffer);
-        nh.PutOutput(socketId,"> ");
+		try
+		{
+			buffer = cmd.execute();
+			nh.PutOutput(socketId, buffer);
+			nh.PutOutput(socketId,"> ");
+		}
+		catch(std::exception& e)
+		{
+			nh.PutOutput(socketId, e.what());
+			break;
+		}
 	}
+
 }
 
 Command &parseCommand(const CommandsMap &commands, const std::string &s)

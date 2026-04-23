@@ -7,7 +7,7 @@ namespace jb
 {
 
 inline const BoundsMap WIDE_BOUNDS {
-    { 0,   {{ -1 , -1 }, { -1,  2}}},    // NORTH
+    { 0,   {{ -1 , -2 }, { -1,  2}}},    // NORTH
     { 90,  {{ -2 , 1 },  { 2 , 1 }}},    // EAST
     { 180, {{ 1 , -2 },  { 1 ,  2 }}},   // SOUTH
     { 270, {{ -2 , -1 },  { 2 ,  -1 }}}  // WEST

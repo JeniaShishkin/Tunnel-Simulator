@@ -7,9 +7,10 @@ namespace jb
 
 struct ExitTile : public Tile 
 {
-	ExitTile() : Tile(EXIT) { }
+	explicit ExitTile() : Tile(EXIT) { }
 	virtual bool canOccupy() const { return true; }
 	virtual char symbol() const override { return 'E'; } 
+	~ExitTile() = default;
 };
 
 } // jb

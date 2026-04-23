@@ -8,8 +8,11 @@ namespace jb
 
 class EmptyTile : public Tile 
 {
+public:
+	explicit EmptyTile() = default;
 	virtual bool canOccupy() const { return true; }
-	virtual char symbol() const override { return ' '; } 
+	virtual char symbol() const override { return '.'; } 
+	~EmptyTile() = default;
 };
 
 } // jb

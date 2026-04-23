@@ -35,7 +35,7 @@ using CommandsMap = std::map<std::string, std::unique_ptr<Command>>;
 template<class CmdT, unsigned int CONSUMPTION>
 struct FixedConsumption : public CmdT
 {
-    FixedConsumption(const WorldGrid *grid, Position *position, const Compass *compass) : CmdT(grid, position, compass) { }
+    FixedConsumption(WorldGrid *grid, Position *position, const Compass *compass) : CmdT(grid, position, compass) { }
     FixedConsumption(Compass *compass) : CmdT(compass) { }
     FixedConsumption(const WorldGrid& grid) : CmdT(grid) { }
     FixedConsumption(const Context &ctx) : CmdT(ctx) { }
