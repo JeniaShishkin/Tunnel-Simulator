@@ -27,63 +27,26 @@
 #include "Sensors/DistanceSensor.h"
 
 /* NETWORKING */
-#include "Networking/NaiveNetworkHandler.h"
+#include "Session.h"
+#include "Networking/DroneNetworkHandler.h"
 
 using namespace jb;
 
-Command &parseCommand(const CommandsMap &commands, const std::string &s);
+static DroneNetworkHandler nh{9000};
 
-
-struct CmdUnknown : public Command
-{
-	virtual std::string execute() const override { std::stringstream buffer; buffer << "ERROR: Unknown command\n"; return buffer.str(); }
-    virtual unsigned int getEnergyConsumption() const override { return 0; }
-} CMD_UNKNOWN;
-
-static NaiveNetworkHandler nh{9000};
-static size_t socketId;
 
 int main()
 {
-	std::vector<Drone> droneVector;
-    static std::string input;
-    nh.GetInput(&socketId, &input);
-    nh.PutOutput(socketId,"> Please choose a drone: A, B, or C: ");
-    nh.GetInput(&socketId, &input);
-    nh.PutOutput(socketId,"> ");
-
-    Drone currentDrone = DRONE_CONFIGS.at(input)();
-	GLOBAL_MAP.setDroneLocation(currentDrone.getPosition());
-    Drone anotherDrone = DRONE_CONFIGS.at("C")();
-	GLOBAL_MAP.setDroneLocation(anotherDrone.getPosition());
-
-	while (currentDrone.doLoop && !currentDrone.reachedExit())
+	size_t socketId;
+	std::string input;
+	while(true)
 	{
-		nh.GetInput(&socketId, &input);        
-		const Command &cmd = parseCommand(currentDrone.getCommand(), input);
-		std::string buffer = cmd.execute();
-		try
-		{
-			buffer = cmd.execute();
-			nh.PutOutput(socketId, buffer);
-			nh.PutOutput(socketId,"> ");
-		}
-		catch(std::exception& e)
-		{
-			nh.PutOutput(socketId, e.what());
-			break;
-		}
+		nh.GetInput(&socketId, &input);
+		if(input.empty()) { continue; }
+    	nh.process(socketId, input);
+		nh.PutOutput(socketId, "> ");
 	}
 
-}
-
-Command &parseCommand(const CommandsMap &commands, const std::string &s)
-{
-	CommandsMap::const_iterator cmdItr = commands.find(s);
-	if (cmdItr == commands.end())
-	{
-		return CMD_UNKNOWN;
-	}
-	return *(cmdItr->second);
+	return 0;
 }
 

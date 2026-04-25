@@ -73,8 +73,8 @@ public:
 	void PutOutput(size_t _socketid, const std::string &_output);
 
 private:
-	virtual void onNewConnection(size_t socketId) const = 0;
-	virtual void onConnectionClosed(size_t socketId) const = 0;
+	virtual void onNewConnection(size_t socketId) = 0;
+	virtual void onConnectionClosed(size_t socketId) = 0;
 
 	struct OnNewConnection
 	{

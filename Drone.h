@@ -47,9 +47,9 @@ public:
 	Drone(Drone&&) = default;
 	Drone& operator=(Drone&&) = default;
 	
-	bool reachedExit();
+	bool reachedExit() const;
 	const Position& getPosition() const { return m_position; }
-	bool doLoop = true;
+	mutable bool doLoop = true;
 	const CommandsMap& getCommand() const { return m_commands; }
 	~Drone() = default;
 

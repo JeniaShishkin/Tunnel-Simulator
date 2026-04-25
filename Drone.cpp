@@ -12,6 +12,7 @@ Drone::Drone(WorldGrid& grid, Compass compass, Position position, unsigned int e
 	    if (dynamic_cast<WideSensor*>(s.get())) { wide = s; }
 	    if (dynamic_cast<DistanceSensor*>(s.get())) { distance = s; }
 	}
+	grid.setDroneLocation(position);
 	 m_commands.emplace("fwd", std::make_unique<FixedConsumption<CmdForward, 10>>(&grid, &m_position, &m_compass));
 	 m_commands.emplace("bwd", std::make_unique<FixedConsumption<CmdBackward, 10>>(&grid, &m_position, &m_compass));
 	 m_commands.emplace("-90", std::make_unique<FixedConsumption<CmdTurnLeft, 10>>(&m_compass));
@@ -25,7 +26,7 @@ Drone::Drone(WorldGrid& grid, Compass compass, Position position, unsigned int e
 	 m_commands.emplace("s_c", std::make_unique<FixedConsumption<SetSensor, 10>>(m_ctx, distance));
 }
 
-bool Drone::reachedExit()
+bool Drone::reachedExit() const
 {
 	return m_grid.getTile(m_position.getX(), m_position.getY()).shouldExit();
 }
