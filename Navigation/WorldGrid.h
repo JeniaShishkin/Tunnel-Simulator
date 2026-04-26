@@ -22,6 +22,10 @@ class WorldGrid
 private:
 
 public:
+	static constexpr size_t NUM_ROWS = 10;
+	static constexpr size_t NUM_COLS = 10;
+	using Grid = std::vector<std::vector<Tile*>>;
+	
 	WorldGrid();
 
 	class const_iterator
@@ -55,11 +59,6 @@ public:
 	int getColSize() const { return m_grid.empty() ? 0 : m_grid[0].size(); }
 
 private:
-
-	static constexpr size_t NUM_ROWS = 10;
-	static constexpr size_t NUM_COLS = 10;
-	using Grid = std::vector<std::vector<Tile*>>;
-
 	Grid m_grid;
 };
 

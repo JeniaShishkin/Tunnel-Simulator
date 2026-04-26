@@ -2,8 +2,6 @@
 
 namespace jb
 {
-
-
 std::string CmdPlantMine::execute() const 
 {
 	std::stringstream out;

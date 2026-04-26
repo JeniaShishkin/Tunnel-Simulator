@@ -20,11 +20,12 @@ class Session
 public:
     using CommandsMap = std::map<std::string, std::unique_ptr<Command>>;
 
-    Session(const std::string& input) : m_drone(DRONE_CONFIGS.at(input)()) { }
+    Session(const std::string& input) : m_initialized(false), m_drone(DRONE_CONFIGS.at(input)()) { }
     const Position& getPosition() const { return m_drone.getPosition(); }
     std::optional<std::reference_wrapper<Command>> getCommand(const std::string& s) const { return *m_drone.getCommand().at(s); }
     const Drone& getCurrentDrone() { return m_drone; }
-    bool canExecute(const Command& cmd) const;
+    bool isInitialized() { return m_initialized; }
+    void markInitialized() { m_initialized = true; }
     std::string handle(std::string& input);
 
     ~Session() = default;
@@ -32,6 +33,7 @@ public:
 
     
 private:
+    bool m_initialized;
     const Drone m_drone;
 };
 

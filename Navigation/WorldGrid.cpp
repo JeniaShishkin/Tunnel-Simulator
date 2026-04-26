@@ -7,6 +7,10 @@
 #include "../Tiles/MineTile.h"
 #include "../Tiles/BatteryTile.h"
 
+#include <unordered_map>
+#include <functional>
+#include <algorithm>
+
 namespace jb
 {
 static constexpr int ASCII_RANGE = 127;
@@ -18,13 +22,19 @@ static DroneTile DRONE{};
 static MineTile MINE{};
 static BatteryTile BATTERY{};
 
+using ActionsMap = std::unordered_map<Tile*, std::function<void(WorldGrid::Grid&, const Position&, const Position&)>>;
+const ActionsMap MOVEMENT_ACTIONS = {
+    {&DRONE, [] (WorldGrid::Grid&, const Position&, const Position&) {throw std::runtime_error("Collision with drone, aircraft destroyed");}},
+    {&MINE, [] (WorldGrid::Grid&, const Position&, const Position&) {throw std::runtime_error("landed on mine, aircraft destroyed");}},
+    {&EMPTY, [] (WorldGrid::Grid& m_grid, const Position& cur, const Position& next) { std::swap(m_grid[cur.getX()][cur.getY()], m_grid[next.getX()][next.getY()]); }},
+    {&EXIT, [] (WorldGrid::Grid& m_grid, const Position& cur, const Position& next) { m_grid[cur.getX()][cur.getY()] = &EMPTY; }}
+};
 
 static std::unordered_set<Tile*> DESTRUCTIVE_TILES { &DRONE, &MINE };
 static std::unordered_set<Tile*> BOOSTING_TILES { &BATTERY };
 
 void initAsciiTable()
 {
-
     SYMBOL_TABLE['%'] = &BATTERY;
     SYMBOL_TABLE['D'] = &DRONE;
     SYMBOL_TABLE['@'] = &MINE;
@@ -102,14 +112,7 @@ void WorldGrid::loadFromFile(std::ifstream& file)
 
 void WorldGrid::updatePosition(const Position& cur, const Position& next) 
 {
-    if(DESTRUCTIVE_TILES.contains(&getTile(next.getX() ,next.getY())))
-    {
-        throw std::runtime_error("Collision with drone/landed on mine, aircraft destroyed");
-    }
-    if(&getTile(next.getX() ,next.getY()) != &EXIT)
-    {
-        std::swap(m_grid[cur.getX()][cur.getY()], m_grid[next.getX()][next.getY()]); 
-    }
+    MOVEMENT_ACTIONS.at(&getTile(next.getX() ,next.getY()))(m_grid, cur, next);
 }
 
 

@@ -39,14 +39,14 @@ int main()
 {
 	size_t socketId;
 	std::string input;
-	while(true)
+	while(nh.isRunning())
 	{
 		nh.GetInput(&socketId, &input);
-		if(input.empty()) { continue; }
-    	nh.process(socketId, input);
-		nh.PutOutput(socketId, "> ");
+		if(!input.empty()) 
+		{ 
+			nh.process(socketId, input); 
+		}
 	}
-
 	return 0;
 }
 
